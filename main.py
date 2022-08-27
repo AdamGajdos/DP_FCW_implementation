@@ -52,7 +52,7 @@ class FCWSimulation:
 
     def __prepare_vehicles(self):
 
-        vehicles_data = load_data('vehicle_data.json')
+        vehicles_data = load_data('SimulationData/vehicle_data.json')
 
         if vehicles_data is not None:
 
@@ -73,7 +73,7 @@ class FCWSimulation:
 
     def __prepare_vehicle_drivers(self):
 
-        drivers_data = load_data('driver_data.json')
+        drivers_data = load_data('SimulationData/driver_data.json')
 
         if drivers_data is not None:
 
@@ -85,7 +85,7 @@ class FCWSimulation:
 
     def __prepare_road(self):
 
-        road_data = load_data('road_data.json')
+        road_data = load_data('SimulationData/road_data.json')
 
         if road_data is not None:
 
