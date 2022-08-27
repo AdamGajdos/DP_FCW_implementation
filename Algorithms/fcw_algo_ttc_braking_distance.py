@@ -1,4 +1,3 @@
-import vehicle_driver
 import math
 import fcw_warnings
 import Algorithms.fcw_algo as algo
@@ -6,201 +5,186 @@ import vehicle_imu
 
 
 class FCWAlgorithmTTCBrakingDistance(algo.FCWAlgorithm):
-    vehicle_IMU: vehicle_imu.IMU
-    vehicle_driver: vehicle_driver.VehicleDriver
 
-    road_adhesion_max: float
-    road_adhesion_min: float
-    brake_eff_max: float
-    brake_eff_min: float
-    t_r_max: float
-    t_r_min: float
-    t_p_max: float
-    t_p_min: float
+    __road_adhesion_max: float
+    __road_adhesion_min: float
+    __t_r_max: float
+    __t_r_min: float
 
-    critical_ttc: float  # [s]
-    g: float
-    equivalent_mass_coefficient: float  # gamma ... 1.03 - 1.05
-    air_density: float  # rho ... kg/m^3 ... when temperature is 25C
-    aerodynamic_resistance_coefficient: float  # C_d ... 0.15 - 0.5
-    rolling_resistance_coefficient: float  # f_r ... 0.012 - 0.015
+    __brake_eff_max = 0.95
+    __brake_eff_min = 0.85
+    __t_p_max = 0.75
+    __t_p_min = 0.3
+    __critical_ttc = 1.5  # [s]
+    __g = 9.80665
+    __equivalent_mass_coefficient = 1.04  # gamma ... 1.03 - 1.05
+    __air_density = 1.18  # rho ... kg/m^3 ... when temperature is 25C
+    __aerodynamic_resistance_coefficient = 0.45  # C_d ... 0.15 - 0.5
+    __rolling_resistance_coefficient = 0.015  # f_r ... 0.012 - 0.015
 
-    def __init__(self, imu, driver):
-        self.vehicle_IMU = imu
-        self.vehicle_driver = driver
+    def __init__(self):
+        pass
 
-        self.set_constants()
+    def define_braking_distance(self, brake_efficiency: float, road_adhesion: float, vehicle_info: dict):
+        c_ae = (self.__air_density * vehicle_info.get('area') * self.__aerodynamic_resistance_coefficient) / 2.0
 
-        self.brake_eff_min = 0.85
-        self.brake_eff_max = 0.95
-        self.t_p_min = 0.3
-        self.t_p_max = 0.75
-        self.critical_ttc = 1.5
-        self.g = 9.80665
-        self.equivalent_mass_coefficient = 1.04
-        self.air_density = 1.18
-        self.aerodynamic_resistance_coefficient = 0.45
-        self.rolling_resistance_coefficient = 0.015
-
-    def update_imu(self, new_imu: vehicle_imu.IMU):
-        self.vehicle_IMU = vehicle_imu.IMU(
-            weight=new_imu.weight,
-            velocity=new_imu.velocity,
-            acceleration=new_imu.acceleration,
-            area=new_imu.area,
-            steep=new_imu.steep,
-            angle=new_imu.angle,
-            road_info=new_imu.road_info,
-            distance=new_imu.distance,
-            has_abs=new_imu.ABS)
-
-    def set_constants(self):
-
-        imu = self.vehicle_IMU
-        age = self.vehicle_driver.age
-
-        if imu.ABS:
-            if imu.road_info.type == vehicle_imu.RoadType.ASPHALT:
-                if imu.road_info.condition == vehicle_imu.RoadCondition.DRY:
-                    self.road_adhesion_min = 0.8
-                    self.road_adhesion_max = 0.9
-                elif imu.road_info.condition == vehicle_imu.RoadCondition.WET:
-                    self.road_adhesion_min = 0.5
-                    self.road_adhesion_max = 0.7
-            elif imu.road_info.type == vehicle_imu.RoadType.CONCRETE:
-                if imu.road_info.condition == vehicle_imu.RoadCondition.DRY:
-                    self.road_adhesion_min = 0.8
-                    self.road_adhesion_max = 0.9
-                elif imu.road_info.condition == vehicle_imu.RoadCondition.WET:
-                    self.road_adhesion_min = 0.8
-                    self.road_adhesion_max = 0.8
-            elif imu.road_info.type == vehicle_imu.RoadType.SNOW:
-                self.road_adhesion_min = 0.2
-                self.road_adhesion_max = 0.2
-            elif imu.road_info.type == vehicle_imu.RoadType.ICE:
-                self.road_adhesion_min = 0.1
-                self.road_adhesion_max = 0.1
-
-        else:
-            if imu.road_info.type == vehicle_imu.RoadType.ASPHALT:
-                if imu.road_info.condition == vehicle_imu.RoadCondition.DRY:
-                    self.road_adhesion_min = 0.75
-                    self.road_adhesion_max = 0.75
-                elif imu.road_info.condition == vehicle_imu.RoadCondition.WET:
-                    self.road_adhesion_min = 0.45
-                    self.road_adhesion_max = 0.6
-            elif imu.road_info.type == vehicle_imu.RoadType.CONCRETE:
-                if imu.road_info.condition == vehicle_imu.RoadCondition.DRY:
-                    self.road_adhesion_min = 0.75
-                    self.road_adhesion_max = 0.75
-                elif imu.road_info.condition == vehicle_imu.RoadCondition.WET:
-                    self.road_adhesion_min = 0.7
-                    self.road_adhesion_max = 0.7
-            elif imu.road_info.type == vehicle_imu.RoadType.SNOW:
-                self.road_adhesion_min = 0.15
-                self.road_adhesion_max = 0.15
-            elif imu.road_info.type == vehicle_imu.RoadType.ICE:
-                self.road_adhesion_min = 0.07
-                self.road_adhesion_max = 0.07
-
-        self.update_driver_dependent_constants(driver_age=age)
-
-    def define_braking_distance(self, brake_efficiency, road_adhesion):
-        C_ae = (self.air_density * self.vehicle_IMU.area * self.aerodynamic_resistance_coefficient) / 2.0
-
-        if self.vehicle_IMU.steep.value == vehicle_imu.SteepSign['UPHILL'].value:
+        if vehicle_info.get('steep').value == vehicle_imu.SteepSign['UPHILL'].value:
             sign = 1
         else:
             sign = -1
 
-        braking_distance = (self.equivalent_mass_coefficient * self.vehicle_IMU.weight) / (2 * self.g * C_ae)
+        braking_distance = (self.__equivalent_mass_coefficient * vehicle_info.get('weight')) / (2 * self.__g * c_ae)
 
         braking_distance *= math.log2(
             abs(
-                1 + (C_ae * self.vehicle_IMU.velocity ** 2) /
-                (brake_efficiency * (road_adhesion + self.rolling_resistance_coefficient) * self.vehicle_IMU.weight
-                 * math.cos(self.vehicle_IMU.angle) + sign * self.vehicle_IMU.weight * math.sin(self.vehicle_IMU.angle))
+                1 + (c_ae * vehicle_info.get('velocity') ** 2) /
+                (brake_efficiency * (road_adhesion + self.__rolling_resistance_coefficient) * vehicle_info.get('weight')
+                 * math.cos(vehicle_info.get('angle')) +
+                 sign * vehicle_info.get('weight') * math.sin(vehicle_info.get('angle')))
             )
         )
 
         return braking_distance
 
-    def define_ttc(self):
+    def define_safety_braking_distances(self, vehicle_info: dict):
+        d_b_min = self.define_braking_distance(road_adhesion=self.__road_adhesion_min,
+                                               brake_efficiency=self.__brake_eff_min,
+                                               vehicle_info=vehicle_info)
 
-        ttc = self.vehicle_IMU.distance / self.vehicle_IMU.velocity
+        d_b_max = self.define_braking_distance(road_adhesion=self.__road_adhesion_max,
+                                               brake_efficiency=self.__brake_eff_max,
+                                               vehicle_info=vehicle_info)
 
-        return ttc
+        d_r_min = self.__t_r_min * vehicle_info.get('velocity')
+        d_r_max = self.__t_r_max * vehicle_info.get('velocity')
 
-    def define_safety_braking_distances(self):
-        D_b_min = self.define_braking_distance(road_adhesion=self.road_adhesion_min,
-                                               brake_efficiency=self.brake_eff_min)
+        d_p_min = self.__t_p_min * vehicle_info.get('velocity')
+        d_p_max = self.__t_p_max * vehicle_info.get('velocity')
 
-        D_b_max = self.define_braking_distance(road_adhesion=self.road_adhesion_max,
-                                               brake_efficiency=self.brake_eff_max)
+        d_s_min = d_b_min + d_r_min + d_p_min
+        d_s_max = d_b_max + d_r_max + d_p_max
 
-        D_r_min = self.t_r_min * self.vehicle_IMU.velocity
-        D_r_max = self.t_r_max * self.vehicle_IMU.velocity
+        return d_s_min, d_s_max
 
-        D_p_min = self.t_p_min * self.vehicle_IMU.velocity
-        D_p_max = self.t_p_max * self.vehicle_IMU.velocity
+    def apply_rule(self, rule: int, ttc: float, velocity: float):
 
-        D_s_min = D_b_min + D_r_min + D_p_min
-        D_s_max = D_b_max + D_r_max + D_p_max
-
-        return D_s_min, D_s_max
-
-    def apply_rule(self, rule: int):
-
-        situation_status = fcw_warnings.DangerLevel.SAFE
-
-        ttc = self.define_ttc()
+        situation_status = FCWWarningTtcBrakingDistance(situation_status='Safe')
 
         if rule == 1:
-            if ttc < self.critical_ttc:
-                situation_status = fcw_warnings.DangerLevel.LEVEL3
+            if ttc < self.__critical_ttc:
+                situation_status = FCWWarningTtcBrakingDistance(situation_status='Danger level 3')
             else:
-                if self.vehicle_IMU.velocity > 0:
-                    situation_status = fcw_warnings.DangerLevel.LEVEL1
+                if velocity > 0:
+                    situation_status = FCWWarningTtcBrakingDistance(situation_status='Danger level 1')
                 else:
-                    situation_status = fcw_warnings.DangerLevel.LEVEL2
+                    situation_status = FCWWarningTtcBrakingDistance(situation_status='Danger level 2')
 
         elif rule == 2:
-            if ttc < self.critical_ttc:
-                situation_status = fcw_warnings.DangerLevel.LEVEL2
+            if ttc < self.__critical_ttc:
+                situation_status = FCWWarningTtcBrakingDistance(situation_status='Danger level 2')
             else:
-                if self.vehicle_IMU.velocity > 0:
-                    situation_status = fcw_warnings.DangerLevel.SAFE
+                if velocity > 0:
+                    situation_status = FCWWarningTtcBrakingDistance(situation_status='Safe')
                 else:
-                    situation_status = fcw_warnings.DangerLevel.LEVEL1
+                    situation_status = FCWWarningTtcBrakingDistance(situation_status='Danger level 1')
 
         return situation_status
 
-    def define_danger(self):
+    def define_danger(self, vehicle_info: dict):
 
-        ds_min, ds_max = self.define_safety_braking_distances()
+        ds_min, ds_max = self.define_safety_braking_distances(vehicle_info=vehicle_info)
 
-        if self.vehicle_IMU.distance < ds_min:
-            situation_status = self.apply_rule(rule=1)
-        elif self.vehicle_IMU.distance < ds_max:
-            situation_status = self.apply_rule(rule=2)
+        ttc = vehicle_info.get('distance') / vehicle_info.get('velocity')
+
+        if vehicle_info.get('distance') < ds_min:
+            situation_status = self.apply_rule(rule=1, ttc=ttc, velocity=vehicle_info.get('velocity'))
+        elif vehicle_info.get('distance') < ds_max:
+            situation_status = self.apply_rule(rule=2, ttc=ttc, velocity=vehicle_info.get('velocity'))
         else:
-            situation_status = fcw_warnings.DangerLevel.SAFE
+            situation_status = FCWWarningTtcBrakingDistance(situation_status='Safe')
 
         return situation_status
 
-    def update_driver_dependent_constants(self, driver_age):
+    def update_driver_dependent_constants(self, driver_info: dict):
+
+        driver_age = driver_info.get('age')
+
         if 18 <= driver_age <= 33:
-            self.t_r_min = 0.74
-            self.t_r_max = 1.1
+            self.__t_r_min = 0.74
+            self.__t_r_max = 1.1
         elif 34 <= driver_age <= 47:
-            self.t_r_min = 0.75
-            self.t_r_max = 1.12
+            self.__t_r_min = 0.75
+            self.__t_r_max = 1.12
         elif 48 <= driver_age <= 57:
-            self.t_r_min = 0.77
-            self.t_r_max = 1.13
+            self.__t_r_min = 0.77
+            self.__t_r_max = 1.13
         elif 58 <= driver_age <= 70:
-            self.t_r_min = 0.78
-            self.t_r_max = 1.17
+            self.__t_r_min = 0.78
+            self.__t_r_max = 1.17
         else:
-            self.t_r_min = 0.8
-            self.t_r_max = 1.2
+            self.__t_r_min = 0.8
+            self.__t_r_max = 1.2
+
+    def update_environment_dependent_constants(self, is_abs_on: bool, environment_info: dict):
+
+        road_type = environment_info.get('road_info').type
+        road_condition = environment_info.get('road_info').condition
+
+        if is_abs_on:
+            if road_type == vehicle_imu.RoadType.ASPHALT:
+                if road_condition == vehicle_imu.RoadCondition.DRY:
+                    self.__road_adhesion_min = 0.8
+                    self.__road_adhesion_max = 0.9
+                elif road_condition == vehicle_imu.RoadCondition.WET:
+                    self.__road_adhesion_min = 0.5
+                    self.__road_adhesion_max = 0.7
+            elif road_type == vehicle_imu.RoadType.CONCRETE:
+                if road_condition == vehicle_imu.RoadCondition.DRY:
+                    self.__road_adhesion_min = 0.8
+                    self.__road_adhesion_max = 0.9
+                elif road_condition == vehicle_imu.RoadCondition.WET:
+                    self.__road_adhesion_min = 0.8
+                    self.__road_adhesion_max = 0.8
+            elif road_type == vehicle_imu.RoadType.SNOW:
+                self.__road_adhesion_min = 0.2
+                self.__road_adhesion_max = 0.2
+            elif road_type == vehicle_imu.RoadType.ICE:
+                self.__road_adhesion_min = 0.1
+                self.__road_adhesion_max = 0.1
+
+        else:
+            if road_type == vehicle_imu.RoadType.ASPHALT:
+                if road_condition == vehicle_imu.RoadCondition.DRY:
+                    self.__road_adhesion_min = 0.75
+                    self.__road_adhesion_max = 0.75
+                elif road_condition == vehicle_imu.RoadCondition.WET:
+                    self.__road_adhesion_min = 0.45
+                    self.__road_adhesion_max = 0.6
+            elif road_type == vehicle_imu.RoadType.CONCRETE:
+                if road_condition == vehicle_imu.RoadCondition.DRY:
+                    self.__road_adhesion_min = 0.75
+                    self.__road_adhesion_max = 0.75
+                elif road_condition == vehicle_imu.RoadCondition.WET:
+                    self.__road_adhesion_min = 0.7
+                    self.__road_adhesion_max = 0.7
+            elif road_type == vehicle_imu.RoadType.SNOW:
+                self.__road_adhesion_min = 0.15
+                self.__road_adhesion_max = 0.15
+            elif road_type == vehicle_imu.RoadType.ICE:
+                self.__road_adhesion_min = 0.07
+                self.__road_adhesion_max = 0.07
+
+########################################################################################################################
+# Warning Class for this type of implementation of FCW assistant
+########################################################################################################################
+
+
+class FCWWarningTtcBrakingDistance(fcw_warnings.FCWWarning):
+
+    situation_status: str
+
+    def __init__(self, situation_status):
+        self.situation_status = situation_status
+
+    def resolve_warning(self):
+        print(self.situation_status)

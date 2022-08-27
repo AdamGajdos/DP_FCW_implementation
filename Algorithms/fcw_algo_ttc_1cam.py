@@ -1,18 +1,14 @@
-import math
-
 from fcw_algo import *
 
 class FCW_Algorithm_TTC_1Cam(FCWAlgorithm):
+    def define_danger(self, vehicle_info: dict) -> fcw_warnings.FCWWarning:
+        pass
 
-    vehicle_imu: vehicle_imu.IMU
+    def update_driver_dependent_constants(self, driver_info: dict):
+        pass
 
-    def __init__(self, imu):
-        self.vehicle_imu = imu
+    def update_environment_dependent_constants(self, is_abs_on: bool, environment_info: dict):
+        pass
 
-    def define_danger(self):
-
-        c = self.vehicle_imu.acceleration * self.vehicle_imu.distance / (self.vehicle_imu.velocity ** 2)
-
-        ttc = (-1 + math.sqrt(1 + 2 * c)) / c
-
-        return
+    def __init__(self, **kwargs):
+        pass

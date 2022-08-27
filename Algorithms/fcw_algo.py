@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-import vehicle_imu
+import fcw_warnings
 
 
 class FCWAlgorithm(ABC):
@@ -9,13 +9,13 @@ class FCWAlgorithm(ABC):
         pass
 
     @abstractmethod
-    def define_danger(self):
+    def define_danger(self, vehicle_info: dict) -> fcw_warnings.FCWWarning:
         pass
 
     @abstractmethod
-    def update_imu(self, imu: vehicle_imu.IMU):
+    def update_driver_dependent_constants(self, driver_info: dict):
         pass
 
     @abstractmethod
-    def update_driver_dependent_constants(self, **driver_info):
+    def update_environment_dependent_constants(self, is_abs_on: bool, environment_info: dict):
         pass

@@ -12,7 +12,6 @@ class Vehicle:
     weight: float                          # [kg]
     area: float                            # [cm^2] ... front area of vehicle
     max_speed: float                       # [m/s]
-    max_acceleration: float                # [m/s^2]
     name: str                              # identification of the car
     is_running: bool                       # is engine running
     is_braking: bool                       # did driver proceeded braking maneuver
@@ -28,11 +27,11 @@ class Vehicle:
     fcw_assistant: fcw.FCWAssistant
     is_fcw_on: bool                       # is fcw assistant running
 
-    def __init__(self, weight, max_speed, max_acceleration, name, has_abs, fcw_assistant):
+    def __init__(self, weight, area, max_speed, name, has_abs, fcw_assistant):
         self.name = name
         self.weight = weight
+        self.area = area
         self.max_speed = max_speed
-        self.max_acceleration = max_acceleration
         self.is_running = False
         self.is_braking = False
         self.has_abs = has_abs
@@ -45,11 +44,8 @@ class Vehicle:
 
         self.driver = None
 
-        self.fcw_assistant = fcw.FCWAssistant(algorithm=fcw_algo_def.FCWAlgorithmTTCBrakingDistance(
-            driver=self.driver,
-            imu=self.imu
-        )
-        ) if fcw_assistant is None else fcw_assistant
+        self.fcw_assistant = fcw.FCWAssistant(algorithm=fcw_algo_def.FCWAlgorithmTTCBrakingDistance()) \
+            if fcw_assistant is None else fcw_assistant
         self.is_fcw_on = True
 
         pass
@@ -81,7 +77,7 @@ class Vehicle:
         self.driver = vehicle_driver.VehicleDriver(age=driver_age)
 
         if self.driver is not None:
-            self.fcw_assistant.update_driver_info(driver_age=driver_age)
+            self.fcw_assistant.update_driver_info(driver_info=driver_age)
             self.is_running = True
 
     def is_moving(self):
@@ -93,7 +89,7 @@ class Vehicle:
     def abs_switch(self):
         self.has_abs = True if not self.has_abs else False
 
-    def __update_imu(self, distance, acceleration, velocity, angle, road_info, steep):
+    def update_imu(self, distance, acceleration, velocity, angle, road_info, steep):
         self.imu.distance = distance
         self.imu.acceleration = acceleration
         self.imu.velocity = velocity
@@ -127,16 +123,12 @@ class Vehicle:
 
         self.direction = new_direction
 
-        # TODO
-        # self.__update_imu(
-        #     distance=,
-        #     velocity=,
-        #     acceleration=,
-        #     angle=,
-        #     steep=,
-        #     road_info=
-        # )
+        environment_info = {
+            'road_info': self.imu.road_info
+        }
 
-        self.fcw_assistant.evaluate_driving_situation(self.get_vehicle_info())
+        self.fcw_assistant.update_environment_info(is_abs_on=self.abs_on, environment_info=environment_info)
+
+        self.fcw_assistant.evaluate_driving_situation(vehicle_info=self.get_vehicle_info())
 
         self.position = new_position

@@ -1,6 +1,4 @@
 import Algorithms.fcw_algo as algo
-import fcw_warnings
-import vehicle_imu
 
 
 class FCWAssistant:
@@ -15,15 +13,11 @@ class FCWAssistant:
             self.fcw_warning = None
 
     def evaluate_driving_situation(self, vehicle_info: dict):
-        fcw_warning = self.algorithm.define_danger()
-        self.__present_situation_status(fcw_warning)
+        fcw_warning = self.algorithm.define_danger(vehicle_info=vehicle_info)
+        fcw_warning.resolve_warning()
 
-    @staticmethod
-    def __present_situation_status(fcw_warning: fcw_warnings.FCWWarning):
-        pass
+    def update_driver_info(self, driver_info: dict):
+        self.algorithm.update_driver_dependent_constants(driver_info=driver_info)
 
-    def update_driver_info(self, driver_info):
-        self.algorithm.update_driver_dependent_constants(driver_info)
-
-    def update_environment_info(self, environment_info):
-        self.algorithm.update_environment_dependent_constants(environment_info)
+    def update_environment_info(self, is_abs_on: bool, environment_info: dict):
+        self.algorithm.update_environment_dependent_constants(is_abs_on=is_abs_on, environment_info=environment_info)
