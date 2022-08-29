@@ -32,7 +32,7 @@ class FCW_Assistant:
             steep=vehicle_imu.SteepSign.UPHILL,  # +..1, -..-1
             angle=0,  # [C]
             road_info=vehicle_imu.RoadInfo(
-                type=vehicle_imu.RoadType.ASPHALT,
+                road_type=vehicle_imu.RoadType.ASPHALT,
                 condition=vehicle_imu.RoadCondition.DRY
             ),
             distance=400,  # [m]
@@ -82,7 +82,7 @@ imu = vehicle_imu.IMU(
             steep=vehicle_imu.SteepSign.UPHILL,  # +..1, -..-1
             angle=0,  # [C]
             road_info=vehicle_imu.RoadInfo(
-                type=vehicle_imu.RoadType.ASPHALT,
+                road_type=vehicle_imu.RoadType.ASPHALT,
                 condition=vehicle_imu.RoadCondition.DRY
             ),
             distance=400,  # [m]

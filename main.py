@@ -63,7 +63,7 @@ class FCWSimulation:
                 self.vehicles.append(
                     vehicle.Vehicle(
                         weight=car['weight'],
-                        has_abs=True if car['has_abs'] == 'true' else False,
+                        has_abs=car['has_abs'],
                         max_speed=car['max_speed'],
                         area=car['area'],
                         fcw_assistant=fcw_assistant,
@@ -90,14 +90,24 @@ class FCWSimulation:
         if road_data is not None:
 
             for point in road_data['points']:
+
+                position = vector_custom.Vector(x=point['position']['x'],
+                                                y=point['position']['y'],
+                                                z=point['position']['z'])
+
+                road_info = vehicle_imu.RoadInfo(road_type=vehicle_imu.RoadType[point['road_info']['type']],
+                                                 condition=vehicle_imu.RoadCondition[point['road_info']['condition']])
+
+                steep = vehicle_imu.SteepSign[point['steep']]
+
                 self.road.append(_RoadPoint(
-                    road_info=point.road_info,
-                    position=point.position,
-                    velocity=point.velocity,
-                    acceleration=point.acceleration,
-                    distance=point.distance,
-                    steep=point.steep,
-                    angle=point.angle
+                    road_info=road_info,
+                    position=position,
+                    velocity=point['velocity'],
+                    acceleration=point['acceleration'],
+                    distance=point['distance'],
+                    steep=steep,
+                    angle=point['angle']
                 ))
 
         else:
@@ -121,8 +131,3 @@ class FCWSimulation:
             )
 
             car.move_vehicle(new_position=point.position)
-
-
-fcw_simulation = FCWSimulation()
-
-fcw_simulation.start_simulation()

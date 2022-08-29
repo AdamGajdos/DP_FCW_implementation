@@ -55,7 +55,7 @@ class Vehicle:
 
         # default assumption
         road_info = vehicle_imu.RoadInfo(
-            type=vehicle_imu.RoadType.ASPHALT,
+            road_type=vehicle_imu.RoadType.ASPHALT,
             condition=vehicle_imu.RoadCondition.DRY
         )
 
@@ -77,17 +77,23 @@ class Vehicle:
         self.driver = vehicle_driver.VehicleDriver(age=driver_age)
 
         if self.driver is not None:
-            self.fcw_assistant.update_driver_info(driver_info=driver_age)
+
+            driver_info = {'age': driver_age}
+
+            self.fcw_assistant.update_driver_info(driver_info=driver_info)
             self.is_running = True
 
     def is_moving(self):
-        return False if self.imu.velocity != 0 and self.imu.acceleration != 0 else True
+
+        is_moving = self.imu.velocity != 0 or self.imu.acceleration != 0   # if acceleration is constant
+
+        return is_moving
 
     def fcw_switch(self):
         self.is_fcw_on = True if not self.is_fcw_on else False
 
     def abs_switch(self):
-        self.has_abs = True if not self.has_abs else False
+        self.abs_on = True if not self.has_abs else False
 
     def update_imu(self, distance, acceleration, velocity, angle, road_info, steep):
         self.imu.distance = distance
@@ -116,9 +122,9 @@ class Vehicle:
     def move_vehicle(self, new_position: vector_custom.Vector):
 
         new_direction = vector_custom.Vector(
-            x=np.clip(new_position.x - self.position.x, 0, 1),
-            y=np.clip(new_position.y - self.position.y, 0, 1),
-            z=np.clip(new_position.z - self.position.z, 0, 1)
+            x=new_position.x - self.position.x,
+            y=new_position.y - self.position.y,
+            z=new_position.z - self.position.z
         )
 
         self.direction = new_direction

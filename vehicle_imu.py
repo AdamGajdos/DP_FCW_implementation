@@ -20,11 +20,11 @@ class RoadCondition(Enum):
 
 
 class RoadInfo:
-    type: RoadType
+    road_type: RoadType
     condition: RoadCondition
 
-    def __init__(self, type: RoadType, condition: RoadCondition):
-        self.type = type
+    def __init__(self, road_type: RoadType, condition: RoadCondition):
+        self.road_type = road_type
         self.condition = condition
 
 
@@ -36,17 +36,6 @@ class IMU:
 
     road_info: RoadInfo
     steep: SteepSign
-
-    # def __init__(self, weight, speed, acceleration, area, steep, angle, road_info, distance, has_abs):
-    #     self.weight = weight
-    #     self.velocity = speed
-    #     self.acceleration = acceleration
-    #     self.area = area
-    #     self.steep = steep
-    #     self.angle = angle
-    #     self.road_info = road_info
-    #     self.distance = distance
-    #     self.ABS = has_abs
 
     def __init__(self, velocity, acceleration, steep, angle, road_info, distance):
 

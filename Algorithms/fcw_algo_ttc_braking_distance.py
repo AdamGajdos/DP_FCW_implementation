@@ -1,10 +1,10 @@
 import math
 import fcw_warnings
-import Algorithms.fcw_algo as algo
+from Algorithms import fcw_algo
 import vehicle_imu
 
 
-class FCWAlgorithmTTCBrakingDistance(algo.FCWAlgorithm):
+class FCWAlgorithmTTCBrakingDistance(fcw_algo.FCWAlgorithm):
 
     __road_adhesion_max: float
     __road_adhesion_min: float
@@ -127,7 +127,7 @@ class FCWAlgorithmTTCBrakingDistance(algo.FCWAlgorithm):
 
     def update_environment_dependent_constants(self, is_abs_on: bool, environment_info: dict):
 
-        road_type = environment_info.get('road_info').type
+        road_type = environment_info.get('road_info').road_type
         road_condition = environment_info.get('road_info').condition
 
         if is_abs_on:

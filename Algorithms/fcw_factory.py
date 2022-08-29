@@ -1,18 +1,17 @@
-import Algorithms as algo
-
+from Algorithms import fcw_algo, fcw_algo_custom, fcw_algo_ttc_1cam, fcw_algo_ttc_braking_distance, fcw_algo_friction
 
 class FCWFactory:
     def __init__(self):
         pass
 
-    def get_fcw(self, fcw_type: str) -> algo.fcw_algo.FCWAlgorithm:
+    def get_fcw(self, fcw_type: str) -> fcw_algo.FCWAlgorithm:
         if fcw_type == 'fcw_algo_ttc_braking_distance':
-            return algo.fcw_algo_ttc_braking_distance.FCWAlgorithmTTCBrakingDistance()
+            return fcw_algo_ttc_braking_distance.FCWAlgorithmTTCBrakingDistance()
         elif fcw_type == 'fcw_algo_ttc_1cam':
-            return algo.fcw_algo_ttc_1cam.FCWAlgorithmTTC1Cam()
+            return fcw_algo_ttc_1cam.FCWAlgorithmTTC1Cam()
         elif fcw_type == 'fcw_algo_friction':
-            return algo.fcw_algo_friction.FCWAlgorithmFriction()
+            return fcw_algo_friction.FCWAlgorithmFriction()
         elif fcw_type == 'fcw_algo_custom':
-            return algo.fcw_algo_custom.FCWAlgorithmCustom()
+            return fcw_algo_custom.FCWAlgorithmCustom()
         else:
             return None
