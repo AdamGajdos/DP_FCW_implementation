@@ -1,6 +1,7 @@
 from fcw_algo import *
 
-class FCW_Algorithm_Friction(FCWAlgorithm):
+
+class FCWAlgorithmFriction(FCWAlgorithm):
     def __init__(self, **kwargs):
         pass
 

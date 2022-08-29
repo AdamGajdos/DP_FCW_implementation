@@ -1,6 +1,7 @@
 from fcw_algo import *
 
-class FCW_Algorithm_TTC_1Cam(FCWAlgorithm):
+
+class FCWAlgorithmTTC1Cam(FCWAlgorithm):
     def define_danger(self, vehicle_info: dict) -> fcw_warnings.FCWWarning:
         pass
 
