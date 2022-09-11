@@ -2,7 +2,7 @@ from Algorithms import fcw_algo
 import fcw_warnings
 
 
-class FCWAlgorithmFriction(fcw_algo.FCWAlgorithm):
+class FCWAlgorithmBerkeley(fcw_algo.FCWAlgorithm):
     def __init__(self, **kwargs):
         pass
 
