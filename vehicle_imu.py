@@ -29,18 +29,22 @@ class RoadInfo:
 
 
 class IMU:
-    velocity: float         # [m/s]
-    acceleration: float     # [m/s^2]
-    angle: float            # [°] ... vertical angle of steeping on road
-    distance: float         # [m] ... distance between vehicle and frontal obstacle
+    velocity: float           # [m/s]
+    acceleration: float       # [m/s^2]
+    deceleration: float       # [m/s^2]
+    relative_velocity: float  # [m/s^2] ... leading_velocity - our_velocity
+    angle: float              # [°] ... vertical angle of steeping on road
+    distance: float           # [m] ... distance between vehicle and frontal obstacle
 
     road_info: RoadInfo
     steep: SteepSign
 
-    def __init__(self, velocity, acceleration, steep, angle, road_info, distance):
+    def __init__(self, velocity, acceleration, deceleration, relative_velocity, steep, angle, road_info, distance):
 
         self.velocity = velocity
         self.acceleration = acceleration
+        self.deceleration = deceleration
+        self.relative_velocity = relative_velocity
         self.steep = steep
         self.angle = angle
         self.road_info = road_info

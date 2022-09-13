@@ -107,6 +107,8 @@ class Vehicle:
         vehicle_info = {
             'velocity': self.imu.velocity,
             'acceleration': self.imu.acceleration,
+            'deceleration': self.imu.deceleration,
+            'relative_velocity': self.imu.relative_velocity,
             'weight': self.weight,
             'area': self.area,
             'abs_on': self.abs_on,
