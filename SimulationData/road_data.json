@@ -6,8 +6,10 @@
          "y": 0,
          "z": 0
        },
-       "velocity": 0,
+       "velocity": 1,
        "acceleration": 0,
+       "deceleration": 1,
+       "delay": 0,
        "distance": 9999999999999,
        "road_info": {
          "type": "ASPHALT",
@@ -22,8 +24,10 @@
          "y": 0,
          "z": 0
        },
-       "velocity": 0,
+       "velocity": 1,
        "acceleration": 0,
+       "deceleration": 1,
+       "delay": 0,
        "distance": 9999999999999,
        "road_info": {
          "type": "ASPHALT",

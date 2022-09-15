@@ -1,7 +1,7 @@
 import math
 import fcw_warnings
-from Algorithms import fcw_algo
 import vehicle_imu
+from Algorithms import fcw_algo
 
 
 class FCWAlgorithmTTCBrakingDistance(fcw_algo.FCWAlgorithm):
@@ -21,6 +21,14 @@ class FCWAlgorithmTTCBrakingDistance(fcw_algo.FCWAlgorithm):
     __air_density = 1.18  # rho ... kg/m^3 ... when temperature is 25C
     __aerodynamic_resistance_coefficient = 0.45  # C_d ... 0.15 - 0.5
     __rolling_resistance_coefficient = 0.015  # f_r ... 0.012 - 0.015
+
+    __distance: float
+    __velocity: float
+    __weight: float
+    __steep: float
+    __angle: float
+    __road_info: vehicle_imu.RoadInfo
+    __area: float
 
     def __init__(self):
         pass
@@ -125,10 +133,10 @@ class FCWAlgorithmTTCBrakingDistance(fcw_algo.FCWAlgorithm):
             self.__t_r_min = 0.8
             self.__t_r_max = 1.2
 
-    def update_environment_dependent_constants(self, is_abs_on: bool, environment_info: dict):
+    def update_environment_dependent_constants(self, is_abs_on: bool, environment_info: vehicle_imu.RoadInfo):
 
-        road_type = environment_info.get('road_info').road_type
-        road_condition = environment_info.get('road_info').condition
+        road_type = environment_info.road_type
+        road_condition = environment_info.condition
 
         if is_abs_on:
             if road_type == vehicle_imu.RoadType.ASPHALT:
@@ -173,6 +181,21 @@ class FCWAlgorithmTTCBrakingDistance(fcw_algo.FCWAlgorithm):
             elif road_type == vehicle_imu.RoadType.ICE:
                 self.__road_adhesion_min = 0.07
                 self.__road_adhesion_max = 0.07
+
+    def update_algo_params(self, new_values: dict):
+
+        self.__distance = new_values.get('distance')
+        self.__velocity = new_values.get('velocity')
+        self.__weight = new_values.get('weight')
+        self.__steep = new_values.get('steep')
+        self.__angle = new_values.get('angle')
+        self.__road_info = new_values.get('road_info')
+        self.__area = new_values.get('area')
+
+        self.update_environment_dependent_constants(is_abs_on=new_values.get('abs_on'),
+                                                    environment_info=self.__road_info)
+
+        pass
 
 ########################################################################################################################
 # Warning Class for this type of implementation of FCW assistant

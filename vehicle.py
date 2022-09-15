@@ -1,10 +1,9 @@
 import math
-import fcw_assistant as fcw
 import Algorithms.fcw_algo_ttc_braking_distance as fcw_algo_def
+import fcw_assistant as fcw
 import vector_custom
 import vehicle_driver
 import vehicle_imu
-import numpy as np
 
 
 class Vehicle:
@@ -64,10 +63,13 @@ class Vehicle:
         imu = vehicle_imu.IMU(
             distance=math.inf,
             acceleration=0,
+            deceleration=0,
             velocity=0,
             angle=0,
+            steep=steep,
             road_info=road_info,
-            steep=steep
+            delay=math.inf,
+            relative_velocity=0
         )
 
         return imu
@@ -95,15 +97,17 @@ class Vehicle:
     def abs_switch(self):
         self.abs_on = True if not self.has_abs else False
 
-    def update_imu(self, distance, acceleration, velocity, angle, road_info, steep):
+    def update_imu(self, distance, acceleration, deceleration, velocity, angle, road_info, steep, delay):
         self.imu.distance = distance
         self.imu.acceleration = acceleration
+        self.imu.deceleration = deceleration
         self.imu.velocity = velocity
         self.imu.angle = angle
         self.imu.road_info = road_info
         self.imu.steep = steep
+        self.imu.delay = delay
 
-    def get_vehicle_info(self):
+    def get_vehicle_info(self) -> dict:
         vehicle_info = {
             'velocity': self.imu.velocity,
             'acceleration': self.imu.acceleration,
@@ -116,7 +120,8 @@ class Vehicle:
             'steep': self.imu.steep,
             'road_info': self.imu.road_info,
             'distance': self.imu.distance,
-            'fcw_on': self.is_fcw_on
+            'fcw_on': self.is_fcw_on,
+            'delay': self.imu.delay
         }
 
         return vehicle_info
@@ -131,11 +136,13 @@ class Vehicle:
 
         self.direction = new_direction
 
-        environment_info = {
-            'road_info': self.imu.road_info
-        }
+        # environment_info = {
+        #     'road_info': self.imu.road_info
+        # }
 
-        self.fcw_assistant.update_environment_info(is_abs_on=self.abs_on, environment_info=environment_info)
+        # self.fcw_assistant.update_environment_info(is_abs_on=self.abs_on, environment_info=environment_info)
+
+        self.fcw_assistant.update_algo_params(self.get_vehicle_info())
 
         self.fcw_assistant.evaluate_driving_situation(vehicle_info=self.get_vehicle_info())
 

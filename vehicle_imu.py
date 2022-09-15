@@ -1,4 +1,3 @@
-import math
 from enum import Enum
 
 
@@ -35,11 +34,13 @@ class IMU:
     relative_velocity: float  # [m/s^2] ... leading_velocity - our_velocity
     angle: float              # [°] ... vertical angle of steeping on road
     distance: float           # [m] ... distance between vehicle and frontal obstacle
+    delay: float              # [s] ... delay to reaction
 
     road_info: RoadInfo
     steep: SteepSign
 
-    def __init__(self, velocity, acceleration, deceleration, relative_velocity, steep, angle, road_info, distance):
+    def __init__(self, velocity, acceleration, deceleration, relative_velocity,
+                 steep, angle, road_info, distance, delay):
 
         self.velocity = velocity
         self.acceleration = acceleration
@@ -49,3 +50,4 @@ class IMU:
         self.angle = angle
         self.road_info = road_info
         self.distance = distance
+        self.delay = delay

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 import fcw_warnings
 
 
@@ -16,6 +17,10 @@ class FCWAlgorithm(ABC):
     def update_driver_dependent_constants(self, driver_info: dict):
         pass
 
+    # @abstractmethod
+    # def update_environment_dependent_constants(self, is_abs_on: bool, environment_info: dict):
+    #     pass
+
     @abstractmethod
-    def update_environment_dependent_constants(self, is_abs_on: bool, environment_info: dict):
+    def update_algo_params(self, new_values: dict):
         pass

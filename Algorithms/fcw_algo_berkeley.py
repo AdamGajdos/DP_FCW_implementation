@@ -1,10 +1,21 @@
 import math
 
-from Algorithms import fcw_algo
 import fcw_warnings
+from Algorithms import fcw_algo
 
 
 class FCWAlgorithmBerkeley(fcw_algo.FCWAlgorithm):
+
+    __velocity: float
+    __relative_velocity: float
+    __deceleration: float
+    __delay: float
+    __distance: float
+    __d_0: float
+    __k1: float
+    __k2: float
+    __k3: float
+
     def __init__(self, d_0, k1, k2, k3):
         self.__d_0 = d_0
         self.__k1 = k1
@@ -12,50 +23,47 @@ class FCWAlgorithmBerkeley(fcw_algo.FCWAlgorithm):
         self.__k3 = k3
         pass
 
-    def define_dbr(self, velocity, relative_velocity):
+    def define_dbr(self):
 
-        d_br = self.__k1 * velocity + self.__k2 * relative_velocity + self.__k3
+        d_br = self.__k1 * self.__velocity + self.__k2 * self.__relative_velocity + self.__k3
 
         return d_br
 
-    def define_dw(self, velocity, relative_velocity, alfa, tau):
+    def define_dw(self):
 
-        d_w = 1/2 * ((velocity**2) / alfa - ((velocity - relative_velocity)**2)/alfa) + velocity * tau + self.__d_0
+        d_w = 1 / 2 * ((self.__velocity**2) / self.__deceleration - ((self.__velocity - self.__relative_velocity) ** 2)
+                       / self.__deceleration) + self.__velocity * self.__delay + self.__d_0
 
         return d_w
 
-    def define_non_dim_warning_value(self, vehicle_info: dict):
+    def define_non_dim_warning_value(self):
 
-        velocity = vehicle_info.get('velocity')
+        d_br = self.define_dbr()
 
-        relative_velocity = vehicle_info.get('relative_velocity')
+        d_w = self.define_dw()
 
-        alfa = vehicle_info.get('alfa')
-
-        tau = vehicle_info.get('tau')
-
-        d = vehicle_info.get('distance')
-
-        d_br = self.define_dbr(velocity=velocity, relative_velocity=relative_velocity)
-
-        d_w = self.define_dw(velocity=velocity, relative_velocity=relative_velocity, alfa=alfa, tau=tau)
-
-        w = (d - d_br) / (d_w - d_br)
+        w = (self.__distance - d_br) / (d_w - d_br)
 
         return w
 
     def define_danger(self, vehicle_info: dict) -> fcw_warnings.FCWWarning:
 
-        w = self.define_non_dim_warning_value(vehicle_info=vehicle_info)
+        w = self.define_non_dim_warning_value()
 
         situation_status = FCWWarningBerkeley(warning_level=w)
 
         return situation_status
 
-    def update_driver_dependent_constants(self, driver_info: dict):
+    def update_algo_params(self, new_values: dict):
+        self.__velocity = new_values.get('velocity')
+        self.__relative_velocity = new_values.get('relative_velocity')
+        self.__deceleration = new_values.get('deceleration')
+        self.__delay = new_values.get('delay')
+        self.__distance = new_values.get('distance')
+
         pass
 
-    def update_environment_dependent_constants(self, is_abs_on: bool, environment_info: dict):
+    def update_driver_dependent_constants(self, driver_info: dict):
         pass
 
 ########################################################################################################################

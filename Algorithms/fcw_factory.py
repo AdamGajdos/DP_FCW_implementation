@@ -13,6 +13,6 @@ class FCWFactory:
         elif fcw_type == 'fcw_algo_custom':
             return fcw_algo_custom.FCWAlgorithmCustom()
         elif fcw_type == 'fcw_algo_berkeley':
-            return fcw_algo_berkeley.FCWAlgorithmBerkeley()
+            return fcw_algo_berkeley.FCWAlgorithmBerkeley(d_0=5, k1=1, k2=1, k3=0)
         else:
             return None

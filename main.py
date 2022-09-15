@@ -1,5 +1,6 @@
 import json
 import Algorithms.fcw_factory
+import fcw_assistant
 import vector_custom
 import vehicle
 import vehicle_driver
@@ -12,17 +13,21 @@ class _RoadPoint:
     road_info: vehicle_imu.RoadInfo
     distance: float
     acceleration: float
+    deceleration: float
     steep: vehicle_imu.SteepSign
     angle: float
+    delay: float
 
-    def __init__(self, position, velocity, road_info, distance, acceleration, steep, angle):
+    def __init__(self, position, velocity, road_info, distance, acceleration, deceleration, steep, angle, delay):
         self.position = position
         self.velocity = velocity
         self.acceleration = acceleration
+        self.deceleration = deceleration
         self.distance = distance
         self.road_info = road_info
         self.steep = steep
         self.angle = angle
+        self.delay = delay
 
 
 def load_data(file_path: str):
@@ -58,7 +63,7 @@ class FCWSimulation:
 
             for car in vehicles_data['vehicles']:
 
-                fcw_assistant = self.fcw_factory.get_fcw(car['fcw_assistant'])
+                fcw_assist = fcw_assistant.FCWAssistant(algorithm=self.fcw_factory.get_fcw(car['fcw_assistant']))
 
                 self.vehicles.append(
                     vehicle.Vehicle(
@@ -66,7 +71,7 @@ class FCWSimulation:
                         has_abs=car['has_abs'],
                         max_speed=car['max_speed'],
                         area=car['area'],
-                        fcw_assistant=fcw_assistant,
+                        fcw_assistant=fcw_assist,
                         name=car['name']
                     )
                 )
@@ -105,9 +110,11 @@ class FCWSimulation:
                     position=position,
                     velocity=point['velocity'],
                     acceleration=point['acceleration'],
+                    deceleration=point['deceleration'],
                     distance=point['distance'],
                     steep=steep,
-                    angle=point['angle']
+                    angle=point['angle'],
+                    delay=point['delay']
                 ))
 
         else:
@@ -126,8 +133,10 @@ class FCWSimulation:
                 road_info=point.road_info,
                 distance=point.distance,
                 acceleration=point.acceleration,
+                deceleration=point.deceleration,
                 steep=point.steep,
-                angle=point.angle
+                angle=point.angle,
+                delay=point.delay
             )
 
             car.move_vehicle(new_position=point.position)
