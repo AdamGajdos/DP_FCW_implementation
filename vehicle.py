@@ -1,7 +1,7 @@
 import math
 import Algorithms.fcw_algo_ttc_braking_distance as fcw_algo_def
 import fcw_assistant as fcw
-import vector_custom
+import location
 import vehicle_driver
 import vehicle_imu
 
@@ -16,9 +16,10 @@ class Vehicle:
     is_braking: bool                       # did driver proceeded braking maneuver
     has_abs: bool                          # is vehicle equipped with abs
     abs_on: bool                           # is abs active
+    wheel_radius: int                      # wheel radius in inches
 
-    direction: vector_custom.Vector        # [x,y,z] ... where car is heading
-    position: vector_custom.Vector         # [x,y,z] ... actual location of car
+    # direction: vector_custom.Vector        # [x,y,z] ... where car is heading
+    position: location.Location            # longitude, latitude ... actual location of car
 
     driver: vehicle_driver
     imu: vehicle_imu
@@ -35,9 +36,10 @@ class Vehicle:
         self.is_braking = False
         self.has_abs = has_abs
         self.abs_on = True if has_abs else False
+        self.wheel_radius = 15
 
-        self.direction = vector_custom.Vector(x=0, y=0, z=0)
-        self.position = vector_custom.Vector(x=0, y=0, z=0)
+        # self.direction = vector_custom.Vector(x=0, y=0, z=0)
+        self.position = location.Location(longitude=0.0, latitude=0.0)
 
         self.imu = self.__init_imu()
 
@@ -121,20 +123,21 @@ class Vehicle:
             'road_info': self.imu.road_info,
             'distance': self.imu.distance,
             'fcw_on': self.is_fcw_on,
-            'delay': self.imu.delay
+            'delay': self.imu.delay,
+            'wheel_radius': self.wheel_radius
         }
 
         return vehicle_info
 
-    def move_vehicle(self, new_position: vector_custom.Vector):
+    def move_vehicle(self, new_position: location.Location):
 
-        new_direction = vector_custom.Vector(
-            x=new_position.x - self.position.x,
-            y=new_position.y - self.position.y,
-            z=new_position.z - self.position.z
-        )
+        # new_direction = vector_custom.Vector(
+        #     x=new_position.x - self.position.x,
+        #     y=new_position.y - self.position.y,
+        #     z=new_position.z - self.position.z
+        # )
 
-        self.direction = new_direction
+        # self.direction = new_direction
 
         # environment_info = {
         #     'road_info': self.imu.road_info

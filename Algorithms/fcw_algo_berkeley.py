@@ -73,7 +73,7 @@ class FCWAlgorithmBerkeley(fcw_algo.FCWAlgorithm):
 
 class FCWWarningBerkeley(fcw_warnings.FCWWarning):
 
-    __a = math.pow(10, -15)
+    __a = 0.0000000001
 
     def __init__(self, warning_level):
         self.warning_level = warning_level

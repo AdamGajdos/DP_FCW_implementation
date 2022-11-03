@@ -1,6 +1,7 @@
 import json
 import Algorithms.fcw_factory
 import fcw_assistant
+import location
 import vector_custom
 import vehicle
 import vehicle_driver
@@ -8,7 +9,7 @@ import vehicle_imu
 
 
 class _RoadPoint:
-    position: vector_custom.Vector
+    position: location.Location
     velocity: float
     road_info: vehicle_imu.RoadInfo
     distance: float
@@ -90,17 +91,25 @@ class FCWSimulation:
 
     def __prepare_road(self):
 
-        road_data = load_data('SimulationData/road_data.json')
+        #road_data = load_data('SimulationData/road_data.json')
+        road_data = load_data('SimulationData/road_data_generated.json')
 
         if road_data is not None:
 
             for point in road_data['points']:
 
-                position = vector_custom.Vector(x=point['position']['x'],
-                                                y=point['position']['y'],
-                                                z=point['position']['z'])
 
-                road_info = vehicle_imu.RoadInfo(road_type=vehicle_imu.RoadType[point['road_info']['type']],
+                # position = vector_custom.Vector(x=point['position']['x'],
+                #                                 y=point['position']['y'],
+                #                                 z=point['position']['z'])
+
+                position = location.Location(longitude=point['position']['longitude'],
+                                             latitude=point['position']['latitude'])
+
+                # road_info = vehicle_imu.RoadInfo(road_type=vehicle_imu.RoadType[point['road_info']['type']],
+                #                                  condition=vehicle_imu.RoadCondition[point['road_info']['condition']])
+
+                road_info = vehicle_imu.RoadInfo(road_type=vehicle_imu.RoadType[point['road_info']['road_type']],
                                                  condition=vehicle_imu.RoadCondition[point['road_info']['condition']])
 
                 steep = vehicle_imu.SteepSign[point['steep']]
