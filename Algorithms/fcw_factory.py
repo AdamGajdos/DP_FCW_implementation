@@ -12,7 +12,7 @@ class FCWFactory:
         elif fcw_type == 'fcw_algo_ttc_1cam':
             return fcw_algo_ttc_1cam.FCWAlgorithmTTC1Cam()
         elif fcw_type == 'fcw_algo_custom':
-            return fcw_algo_custom.FCWAlgorithmCustom()
+            return fcw_algo_custom.FCWAlgorithmCustom(d_0=10, a_max=8)
         elif fcw_type == 'fcw_algo_berkeley':
             return fcw_algo_berkeley.FCWAlgorithmBerkeley(d_0=10, k1=0.1, k2=0.1, k3=0)  # values chosen randomly - they wasn't provided in document
         elif fcw_type == 'fcw_algo_friction':
