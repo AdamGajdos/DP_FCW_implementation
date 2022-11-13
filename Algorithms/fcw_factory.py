@@ -1,4 +1,4 @@
-from Algorithms import fcw_algo, fcw_algo_custom, fcw_algo_ttc_1cam, fcw_algo_ttc_braking_distance, \
+from Algorithms import fcw_algo, fcw_algo_custom, fcw_algo_ttc_braking_distance, \
     fcw_algo_berkeley, fcw_algo_friction
 
 
@@ -9,8 +9,6 @@ class FCWFactory:
     def get_fcw(self, fcw_type: str) -> fcw_algo.FCWAlgorithm:
         if fcw_type == 'fcw_algo_ttc_braking_distance':
             return fcw_algo_ttc_braking_distance.FCWAlgorithmTTCBrakingDistance()
-        elif fcw_type == 'fcw_algo_ttc_1cam':
-            return fcw_algo_ttc_1cam.FCWAlgorithmTTC1Cam()
         elif fcw_type == 'fcw_algo_custom':
             return fcw_algo_custom.FCWAlgorithmCustom(d_0=10, a_max=8)
         elif fcw_type == 'fcw_algo_berkeley':
