@@ -93,7 +93,7 @@ class FCWSimulation:
 
         #road_data = load_data('SimulationData/road_data.json')
         #road_data = load_data('SimulationData/road_data_generated.json')
-        road_data = load_data('SimulationData/road_data_generated_handgen.json')
+        road_data = load_data('SimulationData/road_data_generated_tomtom_with_risk.json')
 
         if road_data is not None:
 

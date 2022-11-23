@@ -1,0 +1,140 @@
+{
+    "points": [
+        {
+            "position": {
+                "longitude": 21.94089,
+                "latitude": 48.97522
+            },
+            "velocity": 19.776305716302147,
+            "acceleration": 0.26975665790229064,
+            "deceleration": -0.26975665790229064,
+            "delay": 0.273,
+            "distance": 96.85492551657218,
+            "road_info": {
+                "road_type": "ASPHALT",
+                "condition": "DRY"
+            },
+            "steep": "UPHILL",
+            "angle": 0
+        },
+        {
+            "position": {
+                "longitude": 21.94089,
+                "latitude": 48.97473
+            },
+            "velocity": 20.10576359598496,
+            "acceleration": -0.2159638767246168,
+            "deceleration": 0.2159638767246168,
+            "delay": 0.273,
+            "distance": 98.53844109515212,
+            "road_info": {
+                "road_type": "ASPHALT",
+                "condition": "DRY"
+            },
+            "steep": "UPHILL",
+            "angle": 0
+        },
+        {
+            "position": {
+                "longitude": 21.94091,
+                "latitude": 48.97451
+            },
+            "velocity": 30.39605035389628,
+            "acceleration": 0.40191369836377344,
+            "deceleration": -0.40191369836377344,
+            "delay": 0.273,
+            "distance": 52.12305738954998,
+            "road_info": {
+                "road_type": "ASPHALT",
+                "condition": "DRY"
+            },
+            "steep": "UPHILL",
+            "angle": 0
+        },
+        {
+            "position": {
+                "longitude": 21.94095,
+                "latitude": 48.97437
+            },
+            "velocity": 26.17508450526293,
+            "acceleration": -0.34172740274946767,
+            "deceleration": 0.34172740274946767,
+            "delay": 0.273,
+            "distance": 38.45297119275271,
+            "road_info": {
+                "road_type": "ASPHALT",
+                "condition": "DRY"
+            },
+            "steep": "UPHILL",
+            "angle": 0
+        },
+        {
+            "position": {
+                "longitude": 21.94103,
+                "latitude": 48.97418
+            },
+            "velocity": 25.771666266186074,
+            "acceleration": -0.12185586156032135,
+            "deceleration": 0.12185586156032135,
+            "delay": 0.273,
+            "distance": 110.39482350094094,
+            "road_info": {
+                "road_type": "ASPHALT",
+                "condition": "DRY"
+            },
+            "steep": "UPHILL",
+            "angle": 0
+        },
+        {
+            "position": {
+                "longitude": 21.94111,
+                "latitude": 48.97405
+            },
+            "velocity": 29.248833246111047,
+            "acceleration": 0.2274120902187875,
+            "deceleration": -0.2274120902187875,
+            "delay": 0.273,
+            "distance": 120.41498333379045,
+            "road_info": {
+                "road_type": "ASPHALT",
+                "condition": "DRY"
+            },
+            "steep": "UPHILL",
+            "angle": 0
+        },
+        {
+            "position": {
+                "longitude": 21.94127,
+                "latitude": 48.97385
+            },
+            "velocity": 32.771189489000825,
+            "acceleration": 0.42889667593848035,
+            "deceleration": -0.42889667593848035,
+            "delay": 0.273,
+            "distance": 134.02339073817612,
+            "road_info": {
+                "road_type": "ASPHALT",
+                "condition": "DRY"
+            },
+            "steep": "UPHILL",
+            "angle": 0
+        },
+        {
+            "position": {
+                "longitude": 21.94202,
+                "latitude": 48.97301
+            },
+            "velocity": 35.902089553652694,
+            "acceleration": 0.14321299520506725,
+            "deceleration": -0.14321299520506725,
+            "delay": 0.273,
+            "distance": 146.20714174124575,
+            "road_info": {
+                "road_type": "ASPHALT",
+                "condition": "DRY"
+            },
+            "steep": "UPHILL",
+            "angle": 0
+        }
+    ]
+}
