@@ -7,6 +7,22 @@
       "area": 1420,
       "fcw_assistant": "fcw_algo_berkeley",
       "name": "Mitsubishi Lancer"
+    },
+    {
+      "weight": 1350,
+      "has_abs": true,
+      "max_speed": 250,
+      "area": 1420,
+      "fcw_assistant": "fcw_algo_custom",
+      "name": "Mitsubishi Lancer"
+    },
+    {
+      "weight": 1350,
+      "has_abs": true,
+      "max_speed": 250,
+      "area": 1420,
+      "fcw_assistant": "fcw_algo_ttc_braking_distance",
+      "name": "Mitsubishi Lancer"
     }
   ]
 }
