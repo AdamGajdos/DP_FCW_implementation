@@ -92,7 +92,8 @@ class FCWSimulation:
     def __prepare_road(self):
 
         #road_data = load_data('SimulationData/road_data.json')
-        road_data = load_data('SimulationData/road_data_generated.json')
+        #road_data = load_data('SimulationData/road_data_generated.json')
+        road_data = load_data('SimulationData/road_data_generated_handgen.json')
 
         if road_data is not None:
 
@@ -131,21 +132,24 @@ class FCWSimulation:
 
     def start_simulation(self):
 
-        car = self.vehicles[0]
         rider = self.vehicle_drivers[0]
 
-        car.start_engine(driver_age=rider.age)
+        for car in self.vehicles:
 
-        for point in self.road:
-            car.update_imu(
-                velocity=point.velocity,
-                road_info=point.road_info,
-                distance=point.distance,
-                acceleration=point.acceleration,
-                deceleration=point.deceleration,
-                steep=point.steep,
-                angle=point.angle,
-                delay=point.delay
-            )
+            car.start_engine(driver_age=rider.age)
 
-            car.move_vehicle(new_position=point.position)
+            for point in self.road:
+                car.update_imu(
+                    velocity=point.velocity,
+                    road_info=point.road_info,
+                    distance=point.distance,
+                    acceleration=point.acceleration,
+                    deceleration=point.deceleration,
+                    steep=point.steep,
+                    angle=point.angle,
+                    delay=point.delay
+                )
+
+                car.move_vehicle(new_position=point.position)
+
+            print('\n')

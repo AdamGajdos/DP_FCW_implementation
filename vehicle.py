@@ -150,3 +150,6 @@ class Vehicle:
         self.fcw_assistant.evaluate_driving_situation(vehicle_info=self.get_vehicle_info())
 
         self.position = new_position
+
+    def get_fcw_assistant(self):
+        return self.fcw_assistant
