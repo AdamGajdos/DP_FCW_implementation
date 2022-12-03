@@ -7,6 +7,7 @@ import fcw_warnings
 from Algorithms import fcw_algo
 
 
+#  This algorithm will be removed
 #  Margins for evaluation of situation severity are not defined in papers.
 #  Actual values are chosen based on others study independent material.
 class FCWAlgoFriction(fcw_algo.FCWAlgorithm):
