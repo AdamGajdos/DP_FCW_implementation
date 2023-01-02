@@ -91,7 +91,7 @@ class FCWSimulation:
 
     def __prepare_road(self):
 
-        #road_data = load_data('SimulationData/road_data.json')
+        #road_data = load_data('SimulationData/road_data_old.json')
         #road_data = load_data('SimulationData/road_data_generated.json')
         road_data = load_data('SimulationData/road_data_generated_tomtom_with_risk.json')
 
