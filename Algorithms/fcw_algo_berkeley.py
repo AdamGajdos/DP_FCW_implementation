@@ -81,15 +81,22 @@ class FCWWarningBerkeley(fcw_warnings.FCWWarning):
 
     def resolve_warning(self):
 
-        risk = 1 / self.warning_level
+        risk = self.warning_level
 
-        if self.warning_level < self.__a:
+        # if self.warning_level < self.__a:
+        #     situation = 'Dangerous'
+        # elif self.warning_level <= 1:
+        #     situation = 'Pay attention'
+        # else:
+        #     situation = 'Safe'
+
+        if risk < self.__a:
             situation = 'Dangerous'
-        elif self.warning_level <= 1:
+        elif risk <= 1:
             situation = 'Pay attention'
         else:
             situation = 'Safe'
 
-        print('Situation status: ' + situation + '. Risk of crash ' + str(risk) + ' %')
+        print('Situation status: ' + situation + '. Safety of situation ' + str(risk))
 
         pass
