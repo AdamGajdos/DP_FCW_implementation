@@ -56,11 +56,11 @@
                 "longitude": 21.94095,
                 "latitude": 48.97437
             },
-            "velocity": 26.17508450526293,
-            "acceleration": -0.34172740274946767,
-            "deceleration": 0.34172740274946767,
+            "velocity": 8.17508450526293,
+            "acceleration": -0.64172740274946767,
+            "deceleration": 0.64172740274946767,
             "delay": 0.273,
-            "distance": 38.45297119275271,
+            "distance": 1.65297119275271,
             "road_info": {
                 "road_type": "ASPHALT",
                 "condition": "DRY"
