@@ -155,10 +155,9 @@ class FCWAlgorithmCustom(fcw_algo.FCWAlgorithm):
         road_condition = self.__road_info.condition
 
         d_br = self.count_weighted_avg(relative_velocity=self.__v_rel,
-                                       d_1=d_br1,
-                                       d_2=d_br2) * self.define_friction_coef(is_abs_on=self.__is_abs_on,
-                                                                              road_type=road_type,
-                                                                              road_condition=road_condition)
+                                       d_1=d_br1, d_2=d_br2) * self.define_friction_coef(is_abs_on=self.__is_abs_on,
+                                                                                         road_type=road_type,
+                                                                                         road_condition=road_condition)
 
         return d_br
 
