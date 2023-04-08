@@ -169,6 +169,27 @@ class FCWAlgorithmCustom(fcw_algo.FCWAlgorithm):
 
         d_br = self.define_critical_braking_distance()
 
+        if d_w < d_br:
+            tmp = d_w
+            d_w = d_br
+            d_br = tmp
+
+        if (d_w < 0) and (d_br < 0):
+            d_w = self.__d_0 * 2
+            d_br = self.__d_0
+        elif d_br < 0:
+            if d_w > (2 * self.__d_0):
+                d_br = d_w / 2
+            else:
+                d_br = self.__d_0
+                d_w = 2 * self.__d_0
+
+        if d_br < self.__d_0:
+            d_br = self.__d_0
+
+        if d_w < (self.__d_0 * 2):
+            d_w = self.__d_0 * 2
+
         if distance > d_w:
             message_text = 'Safe.'
         elif d_br < distance <= d_w:

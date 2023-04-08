@@ -1,7 +1,11 @@
-import math
-
 import fcw_warnings
 from Algorithms import fcw_algo
+
+# When defining maximal deceleration we were deducing from
+# https://www.skoda-storyboard.com/en/skoda-world/innovation-and-technology/how-do-brakes-learn-how-to-brake/
+# where is stated that mentioned vehicle decelerates 100-0km/h in 33-34m.
+# We used formula from https://www.toppr.com/guides/physics-formulas/deceleration-formula/ where a = (v^2 - u^2)/2s
+# and declared max_deceleration = 9.32835 m/s^2.
 
 
 class FCWAlgorithmBerkeley(fcw_algo.FCWAlgorithm):
@@ -15,6 +19,7 @@ class FCWAlgorithmBerkeley(fcw_algo.FCWAlgorithm):
     __k1: float
     __k2: float
     __k3: float
+    __max_deceleration = 9.32835  # m/s^2
 
     def __init__(self, d_0, k1, k2, k3):
         self.__d_0 = d_0
@@ -31,8 +36,8 @@ class FCWAlgorithmBerkeley(fcw_algo.FCWAlgorithm):
 
     def define_dw(self):
 
-        d_w = 1 / 2 * ((self.__velocity**2) / self.__deceleration - ((self.__velocity - self.__relative_velocity) ** 2)
-                       / self.__deceleration) + self.__velocity * self.__delay + self.__d_0
+        d_w = 1 / 2 * ((self.__velocity**2) / self.__max_deceleration - ((self.__velocity - self.__relative_velocity) ** 2)
+                       / self.__max_deceleration) + self.__velocity * self.__delay + self.__d_0
 
         return d_w
 
