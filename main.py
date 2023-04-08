@@ -153,3 +153,8 @@ class FCWSimulation:
                 car.move_vehicle(new_position=point.position)
 
             print('\n')
+
+
+simulation = FCWSimulation()
+
+simulation.start_simulation()
