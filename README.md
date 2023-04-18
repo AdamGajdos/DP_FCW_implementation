@@ -6,7 +6,7 @@ To run simulation with testing data, run
 py main.py
 ```
 
-If you want to test your own data, add your '.json' file to folder 'SimulationData', and in 'main.py' change variable 'road_data' in method '__prepare_road'.
+If you want to test your own input data, add your '.json' file to folder 'SimulationData', and in 'main.py' change variable 'road_data' in method '__prepare_road'.
 
 The structure of your '.json' file should be:
 ```
